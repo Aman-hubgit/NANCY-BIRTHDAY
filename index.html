@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday, Nancy ❤️</title>
+  <meta name="description" content="A romantic, interactive birthday surprise for Nancy from Aman — quizzes, love notes, scrapbook gallery, and a special surprise." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet"/>
+
+  <!-- Simple, soft color palette and animations -->
+  <style>
+    :root{
+      --pink:#ffd6e7;
+      --rose:#ff8fab;
+      --red:#ff4d6d;
+      --white:#fff;
+      --cream:#fff5f8;
+      --shadow:0 10px 25px rgba(0,0,0,0.08);
+      --text:#442c2e;
+      --accent:#fda4af;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,var(--cream),var(--pink));color:var(--text);font-family:Quicksand,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    .container{max-width:980px;margin:0 auto;padding:16px}
+    .card{background:var(--white);border-radius:18px;box-shadow:var(--shadow);padding:20px}
+    .center{display:flex;align-items:center;justify-content:center;text-align:center}
+    button{background:var(--red);color:#fff;border:none;border-radius:999px;padding:12px 20px;font-weight:700;cursor:pointer;transition:transform .15s ease,opacity .2s ease;box-shadow:0 8px 20px rgba(255,77,109,.25)}
+    button:hover{transform:translateY(-2px)}
+    button.ghost{background:#fff;color:var(--red);border:2px solid var(--red)}
+    h1,h2,h3{margin:0 0 10px}
+    h1{font-family:"Great Vibes",cursive;font-size:44px;color:var(--red)}
+    h2{font-size:24px}
+    p{line-height:1.6}
+
+    /* Floating hearts */
+    .hearts{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0}
+    .heart{position:absolute;bottom:-40px;color:var(--rose);opacity:.85;animation:floatUp 8s linear infinite;filter:drop-shadow(0 4px 8px rgba(255,77,109,.25))}
+    @keyframes floatUp{
+      0%{transform:translateY(0) translateX(0) scale(.8);opacity:0}
+      10%{opacity:.9}
+      100%{transform:translateY(-110vh) translateX(var(--drift)) scale(1.3);opacity:0}
+    }
+
+    /* Balloons */
+    .balloon{position:absolute;bottom:-80px;animation:rise 10s ease-in infinite;filter:drop-shadow(0 6px 12px rgba(0,0,0,.15))}
+    @keyframes rise{
+      0%{transform:translateY(0) translateX(0)}
+      100%{transform:translateY(-120vh) translateX(var(--blx))}
+    }
+
+    /* App sections */
+    section{position:relative;z-index:1;margin:18px 0}
+    .hidden{display:none}
+
+    /* Gate (date check) */
+    .gate{min-height:70vh;gap:18px}
+    .gate .prompt{font-size:20px}
+    .gate input{padding:12px 14px;border-radius:12px;border:1.5px solid #ffd1dc;outline:none;width:260px}
+    .error{color:#c1121f;font-weight:700}
+
+    /* Intro landing */
+    .hero{padding:36px 18px;display:grid;gap:10px}
+    .sub{opacity:.85}
+    .music-note{font-size:16px;opacity:.8}
+
+    /* Quiz */
+    .quiz q{display:block;font-weight:700;margin-bottom:8px}
+    .options{display:grid;gap:8px}
+    .reveal{background:var(--cream);border-left:4px solid var(--rose);padding:10px;border-radius:8px;margin-top:10px}
+
+    /* Love notes - flip cards */
+    .notes-grid{display:grid;grid-template-columns:repeat( auto-fit, minmax(220px,1fr) );gap:14px}
+    .flip{perspective:1000px;cursor:pointer}
+    .flip-inner{position:relative;width:100%;height:180px;transition:transform .6s;transform-style:preserve-3d}
+    .flip.flipped .flip-inner{transform:rotateY(180deg)}
+    .face{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:16px;backface-visibility:hidden}
+    .front{background:linear-gradient(135deg,#ffe2ea,#ffd6e7)}
+    .back{background:#fff;transform:rotateY(180deg);border:1.5px dashed #ff94b4}
+
+    /* Gallery (scrapbook) */
+    .gallery{position:relative}
+    .frame{border:8px solid #fff;border-bottom:28px solid #fff;border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);background:#fff;position:relative;overflow:hidden}
+    .frame img{width:100%;height:360px;object-fit:cover;display:block}
+    .caption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.45));color:#fff;padding:12px 10px;font-weight:700}
+    .scrap{position:absolute;inset:-10px;pointer-events:none;opacity:.35;background-image:radial-gradient(#ff9ebb 1px,transparent 1px);background-size:16px 16px}
+    .carousel{display:grid;gap:14px}
+    .carousel-controls{display:flex;gap:10px;justify-content:center}
+    .thumbs{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
+    .thumbs img{width:80px;height:60px;object-fit:cover;border:3px solid transparent;border-radius:8px;cursor:pointer;transition:opacity .2s}
+    .thumbs img.active{border-color:#ff94b4}
+
+    /* Cake + candles */
+    .cake-wrap{display:grid;justify-items:center;gap:12px}
+    .cake{position:relative;width:260px;height:180px;background:#ff9ebb;border-radius:20px 20px 8px 8px;box-shadow:inset 0 -8px 0 #ff7aa2}
+    .plate{width:300px;height:22px;background:#fff;border-radius:14px;box-shadow:var(--shadow)}
+    .candle{position:absolute;bottom:90px;width:12px;height:60px;background:#fff;border-radius:6px;box-shadow:0 4px 0 #ffe5ec}
+    .wick{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:2px;height:8px;background:#333;border-radius:2px}
+    .flame{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:12px;height:18px;background:radial-gradient(ellipse at center, #ffd27d 0%, #ff9b42 70%, rgba(255,155,66,0) 72%);border-radius:50% 50% 50% 50%;filter:blur(.3px);animation:flicker .12s infinite}
+    @keyframes flicker{
+      0%{transform:translateX(-50%) scale(1) translateY(0)}
+      50%{transform:translateX(calc(-50% + 1px)) scale(1.05) translateY(-1px)}
+      100%{transform:translateX(calc(-50% - 1px)) scale(.98) translateY(0)}
+    }
+
+    /* Fireworks/confetti */
+    canvas#fx{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:3}
+
+    /* Final letter */
+    .letter{white-space:pre-wrap;border:1.5px solid #ffd1dc;border-radius:12px;padding:14px;background:#fff;line-height:1.7}
+
+    /* Footer help hint */
+    .hint{opacity:.75;font-size:13px}
+
+    /* Responsive tweaks */
+    @media (max-width:520px){
+      h1{font-size:36px}
+      .frame img{height:260px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating hearts and balloons background -->
+  <div class="hearts" id="hearts"></div>
+  <div class="hearts" id="balloons"></div>
+
+  <!-- FX canvas -->
+  <canvas id="fx"></canvas>
+
+  <div class="container">
+    <!-- Optional simple lock (password 222024) -->
+    <section id="lock" class="card center" style="min-height:60vh;gap:14px;">
+      <h2>Private Surprise</h2>
+      <p class="sub">Enter the secret code to continue.</p>
+      <input id="lockInput" type="password" placeholder="Enter code" />
+      <div id="lockError" class="error" style="display:none;">Incorrect code. Try again.</div>
+      <button id="unlockBtn">Unlock</button>
+      <p class="hint">Tip: Code set by Aman (can edit in CONFIG).</p>
+    </section>
+
+    <!-- GATE -->
+    <section id="gate" class="card center hidden">
+      <div class="gate center" style="flex-direction:column;">
+        <h2>Playful Greeting</h2>
+        <p class="prompt">Nancy, do you know what date is today?</p>
+        <input id="dateAnswer" placeholder="Type the special date..." />
+        <div id="dateError" class="error" style="display:none;">Almost! Try the special date format from Aman.</div>
+        <button id="dateBtn">Check</button>
+      </div>
+    </section>
+
+    <!-- INTRO -->
+    <section id="intro" class="card hero hidden center" style="flex-direction:column;">
+      <h1 id="introTitle">Happy Birthday, Nancy ❤️</h1>
+      <p class="sub" id="introSub">From Aman — with all the love in the world.</p>
+      <div class="music-note">Tap anywhere to let the soft music play.</div>
+      <div style="height:10px;"></div>
+      <button id="toQuiz">Start the journey</button>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="card hidden">
+      <h2>Mini Quiz</h2>
+      <p class="sub">Answer some fun questions about us. Each correct answer reveals a little message from Aman to Nancy.</p>
+      <div id="quizWrap"></div>
+      <div style="height:10px;"></div>
+      <button id="toNotes" class="ghost">Next: Love Notes</button>
+    </section>
+
+    <!-- LOVE NOTES -->
+    <section id="notes" class="card hidden">
+      <h2>Love Notes</h2>
+      <p class="sub">Tap each card to flip and read a heartfelt note.</p>
+      <div class="notes-grid" id="notesGrid"></div>
+      <div style="height:10px;"></div>
+      <button id="toGallery" class="ghost">Next: Our Photos</button>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="card hidden">
+      <h2>Our Best Moments, Nancy ❤️</h2>
+      <div class="gallery">
+        <div class="frame" id="frame">
+          <div class="scrap"></div>
+          <img id="mainImg" alt="Our memory"/>
+          <div class="caption" id="mainCap">Our memory together.</div>
+        </div>
+        <div style="height:10px;"></div>
+        <div class="carousel">
+          <div class="carousel-controls center">
+            <button id="prevImg" class="ghost">← Prev</button>
+            <button id="nextImg" class="ghost">Next →</button>
+          </div>
+          <div class="thumbs" id="thumbs"></div>
+        </div>
+      </div>
+      <div style="height:10px;"></div>
+      <button id="toCake" class="ghost">Next: Special Surprise</button>
+    </section>
+
+    <!-- SPECIAL SURPRISE -->
+    <section id="surprise" class="card hidden">
+      <h2>Make a Wish 🎂</h2>
+      <p class="sub">Light is warm, love is brighter. Blow out the candles when ready.</p>
+      <div class="cake-wrap">
+        <div class="plate"></div>
+        <div class="cake" id="cake"></div>
+        <button id="blowBtn">Blow out the candles</button>
+      </div>
+      <div class="center" style="margin-top:10px;">
+        <div id="bigMsg" style="font-family:'Great Vibes',cursive;font-size:34px;color:var(--red);display:none;text-align:center;">
+          Happy Birthday, My Love Nancy! ❤️ – From Aman
+        </div>
+      </div>
+      <div style="height:10px;"></div>
+      <button id="toFinal" class="ghost">Final Message</button>
+    </section>
+
+    <!-- FINAL LETTER -->
+    <section id="final" class="card hidden">
+      <h2>From Aman, with Love</h2>
+      <div class="letter" id="finalLetter"></div>
+      <div style="height:12px;"></div>
+      <button id="giftBtn">Click for Your Gift</button>
+      <div id="giftMsg" class="card center hidden" style="margin-top:12px;">
+        <div id="giftText" style="white-space:pre-wrap;"></div>
+      </div>
+    </section>
+
+    <section class="center" style="margin:14px 0;">
+      <p class="hint">All messages, questions, answers, and images are editable in CONFIG at the top of the file.</p>
+    </section>
+  </div>
+
+  <!-- Soft background music -->
+  <audio id="bgm" loop preload="auto">
+    <!-- Replace with a soft romantic instrumental mp3 path -->
+    <source src="assets/romantic-instrumental.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // =========================
+    // CONFIG — EDIT EVERYTHING HERE
+    // =========================
+    const CONFIG = {
+      passwordEnabled: true,
+      password: "222024", // optional lock
+      expectedDateAnswer: "October 6", // e.g., "October 6" or "06/10" or "6 Oct" — validation is lenient below
+      introTitle: "Happy Birthday, Nancy ❤️",
+      introSub: "From Aman — with all the love in the world.",
+      quiz: [
+        {
+          q: "Where was our first date?",
+          options: ["Smaash Ambience", "CyberHub Starbucks", "Leisure Valley Park", "Kingdom of Dreams"],
+          correct: 1,
+          reveal: "CyberHub Starbucks — our first sparks over coffee. I’ll never forget that smile."
+        },
+        {
+          q: "What’s my favorite memory with you?",
+          options: ["Rainy walk", "Exam study session", "Sunset drive", "Movie night"],
+          correct: 2,
+          reveal: "That sunset drive — the sky, your laughter, and the quiet felt like home."
+        },
+        {
+          q: "Which trait of yours makes me fall for you more?",
+          options: ["Kindness", "cuteness", "Courage", "All of the above"],
+          correct: 3,
+          reveal: "Every little thing — it’s truly all of the above."
+        }
+      ],
+      notes: [
+        { front: "Tap to open", back: "You make ordinary days feel magical." },
+        { front: "Tap to open", back: "Thank you for choosing me every day." },
+        { front: "Tap to open", back: "With you, I’ve learned what real love feels like." },
+        { front: "Tap to open", back: "I’m proud of you — today and always." }
+      ],
+      gallery: {
+        captionPrefix: "Our best moments, Nancy ❤️",
+        images: [
+          { src: "assets/1.jpg", caption: "First picture together — a memory I replay." },
+          { src: "assets/2.jpg", caption: "That candid laugh that melts me." },
+          { src: "assets/3.jpg", caption: "Hands held, hearts closer." },
+          { src: "assets/4.jpg", caption: "A little adventure, a lot of love." }
+        ]
+      },
+      finalLetter:
+`My dearest Nancy,
+
+Every day with you has been a gift. You are the gentlest part of my world — the reason my heart races, then finds its calm.
+
+Thank you for your love, your patience, your laughter that lights my days. I promise to stand with you, to cherish you, and to choose you, always.
+
+Happy Birthday, my love.
+— Aman`,
+      giftText:
+`Happy 17th birthday, my love
+❣️🥳🎂
+You are the most caring and loving person I have ever met, and I feel so lucky to be with you. I promise to always cherish and respect you, and to support you in all your dreams and goals. You have brought so much joy and happiness into my life❣️🥺🫂 You are the reason I smile every day❣️💕 know that I'm not always the best with words, but I want you to know on this special day how I really feel: so madly, deeply in love with you💓🥹❣️
+You're the most special thing to me. Thank you for being mine🧿🧿🥹💕🌺
+I love you so much my baby girl 💓 🌺😘
+
+Happy birthday once again🌺🎂💕😘`
+    };
+
+    // =========================
+    // Utilities
+    // =========================
+    function $(id){return document.getElementById(id)}
+    function show(id){$(id).classList.remove('hidden')}
+    function hide(id){$(id).classList.add('hidden')}
+
+    // Simple date normalization
+    function normalizeDateInput(s){
+      s = (s||"").trim().toLowerCase();
+      s = s.replace(/st|nd|rd|th/g,""); // remove suffixes
+      return s.replace(/\s+/g," ");
+    }
+    function matchesSpecialDate(input, expected){
+      const i = normalizeDateInput(input);
+      const e = normalizeDateInput(expected);
+      if(i===e) return true;
+      // common variants
+      const alt = [
+        e,
+        e.replace("october","oct"),
+        e.replace("october","6").replace(" ","/"),
+        e.replace("october","6 ").replace(" ","/"),
+      ];
+      return alt.includes(i);
+    }
+
+    // =========================
+    // Floating hearts and balloons
+    // =========================
+    function rand(min,max){return Math.random()*(max-min)+min}
+    function spawnHearts(){
+      const wrap = $('hearts');
+      for(let i=0;i<18;i++){
+        const el=document.createElement('div');
+        el.className='heart';
+        el.textContent='❤';
+        el.style.left=rand(0,100)+'vw';
+        el.style.fontSize=rand(14,28)+'px';
+        el.style.animationDelay=rand(0,6)+'s';
+        el.style.setProperty('--drift', rand(-40,40)+'px');
+        wrap.appendChild(el);
+      }
+    }
+    function spawnBalloons(){
+      const wrap = $('balloons');
+      const colors=['#ff8fab','#ffb3c6','#ffc2d1','#ffd6e7'];
+      for(let i=0;i<8;i++){
+        const b=document.createElement('div');
+        b.className='balloon';
+        b.style.left=rand(0,100)+'vw';
+        b.style.width='28px'; b.style.height='36px';
+        b.style.borderRadius='50% 50% 45% 45%';
+        b.style.background=colors[i%colors.length];
+        b.style.animationDelay=rand(0,6)+'s';
+        b.style.setProperty('--blx', rand(-40,40)+'px');
+        wrap.appendChild(b);
+      }
+    }
+
+    // =========================
+    // Sections flow + Lock
+    // =========================
+    const bgm = $('bgm');
+
+    function startMusicOnFirstTap(){
+      const resume = () => {
+        bgm.play().catch(()=>{ /* user gesture might still be needed */ });
+        window.removeEventListener('pointerdown', resume);
+      };
+      window.addEventListener('pointerdown', resume, { once:true });
+    }
+
+    function initLock(){
+      if(!CONFIG.passwordEnabled){ hide('lock'); show('gate'); return; }
+      const btn=$('unlockBtn'), input=$('lockInput'), err=$('lockError');
+      btn.addEventListener('click', ()=>{
+        if(input.value===CONFIG.password){ hide('lock'); show('gate'); }
+        else { err.style.display='block'; }
+      });
+    }
+
+    function initGate(){
+      const btn=$('dateBtn'), input=$('dateAnswer'), err=$('dateError');
+      btn.addEventListener('click', ()=>{
+        if(matchesSpecialDate(input.value, CONFIG.expectedDateAnswer)){
+          hide('gate'); show('intro');
+          $('introTitle').textContent=CONFIG.introTitle;
+          $('introSub').textContent=CONFIG.introSub;
+        } else {
+          err.style.display='block';
+        }
+      });
+    }
+
+    // =========================
+    // QUIZ
+    // =========================
+    function renderQuiz(){
+      const wrap=$('quizWrap'); wrap.innerHTML='';
+      CONFIG.quiz.forEach((item,idx)=>{
+        const card=document.createElement('div');
+        card.className='card'; card.style.margin='10px 0';
+        const qq=document.createElement('div'); qq.className='quiz';
+        qq.innerHTML = `<q>${item.q}</q>`;
+        const opts=document.createElement('div'); opts.className='options';
+        const reveal=document.createElement('div'); reveal.className='reveal'; reveal.style.display='none'; reveal.textContent=item.reveal;
+
+        item.options.forEach((opt,i)=>{
+          const b=document.createElement('button');
+          b.className='ghost';
+          b.textContent=opt;
+          b.addEventListener('click', ()=>{
+            if(i===item.correct){
+              reveal.style.display='block';
+              b.style.background='#ff8fab'; b.style.color='#fff';
+            } else {
+              b.style.opacity='.6';
+            }
+          });
+          opts.appendChild(b);
+        });
+
+        card.appendChild(qq); card.appendChild(opts); card.appendChild(reveal);
+        wrap.appendChild(card);
+      });
+    }
+
+    // =========================
+    // LOVE NOTES (flip)
+    // =========================
+    function renderNotes(){
+      const grid=$('notesGrid'); grid.innerHTML='';
+      CONFIG.notes.forEach(n=>{
+        const holder=document.createElement('div');
+        holder.className='flip';
+        const inner=document.createElement('div');
+        inner.className='flip-inner';
+        const front=document.createElement('div');
+        front.className='face front';
+        front.textContent=n.front;
+        const back=document.createElement('div');
+        back.className='face back';
+        back.textContent=n.back;
+
+        holder.appendChild(inner);
+        inner.appendChild(front);
+        inner.appendChild(back);
+        holder.addEventListener('click', ()=> holder.classList.toggle('flipped'));
+        grid.appendChild(holder);
+      });
+    }
+
+    // =========================
+    // GALLERY
+    // =========================
+    let galleryIndex=0;
+    function renderGallery(){
+      const {images, captionPrefix} = CONFIG.gallery;
+      const mainImg=$('mainImg'); const mainCap=$('mainCap'); const thumbs=$('thumbs');
+      function setIndex(i){
+        galleryIndex = (i+images.length)%images.length;
+        mainImg.src = images[galleryIndex].src;
+        mainCap.textContent = `${captionPrefix}: ${images[galleryIndex].caption}`;
+        // highlight thumbs
+        Array.from(thumbs.children).forEach((img,ix)=>{
+          img.classList.toggle('active', ix===galleryIndex);
+        });
+      }
+      $('prevImg').onclick=()=> setIndex(galleryIndex-1);
+      $('nextImg').onclick=()=> setIndex(galleryIndex+1);
+      // thumbs
+      thumbs.innerHTML='';
+      images.forEach((pic,ix)=>{
+        const t=document.createElement('img');
+        t.src=pic.src; t.alt='thumb';
+        t.addEventListener('click', ()=> setIndex(ix));
+        thumbs.appendChild(t);
+      });
+      setIndex(0);
+    }
+
+    // =========================
+    // CAKE + CANDLES + FIREWORKS
+    // =========================
+    function buildCake(){
+      const cake=$('cake'); cake.innerHTML='';
+      const candleCount=5;
+      const spacing = (cake.clientWidth - 40) / (candleCount-1);
+      for(let i=0;i<candleCount;i++){
+        const c=document.createElement('div'); c.className='candle';
+        const left=20 + i*spacing;
+        c.style.left=left+'px';
+        const wick=document.createElement('div'); wick.className='wick';
+        const flame=document.createElement('div'); flame.className='flame'; flame.dataset.lit='1';
+        c.appendChild(wick); c.appendChild(flame);
+        cake.appendChild(c);
+      }
+    }
+
+    // Simple confetti/fireworks using canvas particles
+    const fxCanvas = $('fx');
+    const ctx = fxCanvas.getContext('2d');
+    let particles = [];
+    function resizeCanvas(){
+      fxCanvas.width = window.innerWidth;
+      fxCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function spawnBurst(x,y,count=120){
+      for(let i=0;i<count;i++){
+        const angle = Math.random()*Math.PI*2;
+        const speed = Math.random()*5+2;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - 2,
+          life: Math.random()*80+60,
+          color: `hsl(${Math.floor(Math.random()*360)}, 85%, 65%)`,
+          size: Math.random()*3+2
+        });
+      }
+    }
+
+    function tick(){
+      ctx.clearRect(0,0,fxCanvas.width,fxCanvas.height);
+      for(let i=particles.length-1;i>=0;i--){
+        const p=particles[i];
+        p.x+=p.vx; p.y+=p.vy;
+        p.vy+=0.06; // gravity
+        p.life--;
+        ctx.fillStyle=p.color;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fill();
+        if(p.life<=0) particles.splice(i,1);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function blowCandles(){
+      // extinguish flames
+      document.querySelectorAll('.flame').forEach(f=>{
+        f.style.display='none'; f.dataset.lit='0';
+      });
+      // fireworks
+      const rect = $('cake').getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top;
+      spawnBurst(cx, cy);
+      spawnBurst(cx-120, cy+20, 80);
+      spawnBurst(cx+120, cy+20, 80);
+      $('bigMsg').style.display='block';
+    }
+
+    // =========================
+    // FINAL
+    // =========================
+    function initFinal(){
+      $('finalLetter').textContent = CONFIG.finalLetter;
+      $('giftBtn').addEventListener('click', ()=>{
+        $('giftText').textContent = CONFIG.giftText;
+        $('giftMsg').classList.remove('hidden');
+      });
+    }
+
+    // =========================
+    // Nav buttons
+    // =========================
+    function wireNav(){
+      $('toQuiz').onclick=()=>{ hide('intro'); show('quiz'); renderQuiz(); };
+      $('toNotes').onclick=()=>{ hide('quiz'); show('notes'); renderNotes(); };
+      $('toGallery').onclick=()=>{ hide('notes'); show('gallery'); renderGallery(); };
+      $('toCake').onclick=()=>{ hide('gallery'); show('surprise'); buildCake(); };
+      $('toFinal').onclick=()=>{ hide('surprise'); show('final'); };
+      $('blowBtn').onclick=blowCandles;
+    }
+
+    // =========================
+    // Boot
+    // =========================
+    function boot(){
+      resizeCanvas(); tick();
+      spawnHearts(); spawnBalloons();
+      startMusicOnFirstTap();
+      initLock();
+      initGate();
+      wireNav();
+      initFinal();
+
+      // Intro music: try play on tap
+      window.addEventListener('pointerdown', ()=>{
+        bgm.play().catch(()=>{});
+      }, { once:true });
+    }
+    document.addEventListener('DOMContentLoaded', boot);
+  </script>
+</body>
+</html>
