@@ -84,7 +84,7 @@
     /* Gallery (scrapbook) */
     .gallery{position:relative}
     .frame{border:10px solid #fff;border-bottom:28px solid #fff;border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);background:#fff;position:relative;overflow:hidden}
-    .frame img{width:100%;height:500px;object-fit:cover;display:block}
+    .frame img{width:100%;height:700px;object-fit:cover;display:block}
     .caption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.45));color:#fff;padding:12px 10px;font-weight:700}
     .scrap{position:absolute;inset:-10px;pointer-events:none;opacity:.35;background-image:radial-gradient(#ff9ebb 1px,transparent 1px);background-size:16px 16px}
     .carousel{display:grid;gap:14px}
@@ -118,7 +118,7 @@
     /* Responsive tweaks */
     @media (max-width:520px){
       h1{font-size:36px}
-      .frame img{height:260px}
+      .frame img{height:500px}
     }
   </style>
 </head>
@@ -138,7 +138,7 @@
       <input id="lockInput" type="password" placeholder="Enter code" />
       <div id="lockError" class="error" style="display:none;">Incorrect code. Try again.</div>
       <button id="unlockBtn">Unlock</button>
-      <p class="hint">Tip: Code set by Aman (can edit in CONFIG).</p>
+      <p class="hint">Tip: Code set by Aman (Anan only can edit).</p>
     </section>
 
     <!-- GATE -->
@@ -156,7 +156,7 @@
     <section id="intro" class="card hero hidden center" style="flex-direction:column;">
       <h1 id="introTitle">Happy Birthday, Nancy ❤️</h1>
       <p class="sub" id="introSub">From Aman — with all the love in the world.</p>
-      <div class="music-note">Tap anywhere to let the soft music play.</div>
+      <div class="music-note">SORRY I TRIED TO ADD MUSIC AND IT IS AVAILABLE IN THIS CODE BUT IDK WHY IT IS NOT PLAYING 😞.</div>
       <div style="height:10px;"></div>
       <button id="toQuiz">Start the journey</button>
     </section>
@@ -238,7 +238,7 @@
   <!-- Soft background music -->
   <audio id="bgm" loop preload="auto">
     <!-- Replace with a soft romantic instrumental mp3 path -->
-    <source src="assets/music.mp3" type="audio/mp3">
+    <source src="assets/music.mp3" type="audio/mpeg">
   </audio>
 
   <script>
@@ -278,12 +278,12 @@
         { front: "Tap to open", back: "I’m proud of you — today and always." }
       ],
       gallery: {
-        captionPrefix: "some of the best and cutieset pixcs of your my love 💕 ❤️",
+        captionPrefix: "I Love you mera buggu  💕 ❤️",
         images: [
           { src: "assets/1.jpg", caption: "You’re the style to my soul and the joy in my world—my love for you grows deeper with every heartbeat.." },
           { src: "assets/2.jpg", caption: "No matter the day, you are my dream coming true—thank you for letting my heart love you, endlessly." },
-          { src: "assets/4.jpg", caption: "In your presence, even ordinary moments turn magical—I adore you more than words can ever say, my precious." },
-          { src: "assets/5.jpg", caption: "Even in black and white, you color my world with love." }
+          { src: "assets/4.jpg", caption: "Even in black and white, you color my world with love." },
+          { src: "assets/5.jpg", caption: "In your presence, even ordinary moments turn magical—I adore you more than words can ever say, my precious." }
         ]
       },
       finalLetter:
